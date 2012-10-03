@@ -1,0 +1,75 @@
+#!/bin/bash
+####################################################################
+# Movie List Creator Script by Luis Alvarado
+# Creates File with Movie Name, Resolution, File Type & Quality
+# CONFIG Variables
+
+# FOLDER Variable is where all your movies are
+# NOTE: The name of the movies is extracted from the movie's folder,
+#       if the folder is called "..Movies/The Rabbit"
+#				the name of the movie in that folder will be "The Rabbit". 
+
+folder="/media/xtreme/Movies"
+
+# FINAL Variable is the name of the file you wish to create with the
+# Movie List.
+
+final="moviefinal.txt"
+
+####################################################################
+
+here=$(pwd)
+
+clear
+echo "Processing Movies..."
+echo ""
+percent=$(ls $folder/|wc -l| while read pipe; do echo "scale=3; 100/$pipe"; done|bc)
+movies=1
+rm tempmovies 2> /dev/null
+for dir in $folder/*
+do
+  (cd "$dir" && pwd|cut -d \/ -f6|tr -s '\n' ', ' >> $here/tempmovies &&
+  exiftool -ext .mkv -ext .m4v -ext .mp4 -ext .avi -ext .mpg * -t -s3 -ImageSize -FileType|tr -s '\t' ',' >> $here/tempmovies )
+	base=$(echo "scale=3; $percent * $movies" | bc)
+	echo -ne " Total: $base% Done / $movies Movies Added!"\\r
+	let movies=movies+1
+done
+
+echo " "
+echo " Detecting Movie Quality..."
+echo " "
+
+rm $final 2> /dev/null
+cat tempmovies | while read MovieName;
+do
+	echo "$MovieName" | cut -d ',' -f2 | cut -d 'x' -f2 | sort | uniq | while read MovieRes;
+	do
+		if (($MovieRes>=304 && $MovieRes<=370))
+                then
+                        echo "$MovieName,LOW-RES DVD"
+		elif (($MovieRes>=241 && $MovieRes<=369))
+		then
+			echo "$MovieName,HI-RES DVD"
+		elif (($MovieRes>=371 && $MovieRes<=479))
+		then
+			echo "$MovieName, EDTV 480p"
+		elif (($MovieRes>=480 && $MovieRes<=760))
+		then
+			echo "$MovieName, HDTV 720p"
+		elif (($MovieRes>=761 && $MovieRes<=1200))
+		then
+			echo "$MovieName, HDTV 1080p"
+		else
+			echo "$MovieName,VCD"
+		fi >> $final
+	done
+done
+
+echo " "
+echo "Summary: "
+echo "----------------"
+cat $final | cut -d ',' -f4| sort | uniq -c
+echo "----------------"
+echo " "
+rm tempmovies 2> /dev/null
+echo "File $final Created!"
