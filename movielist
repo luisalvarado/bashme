@@ -7,7 +7,7 @@
 # FOLDER Variable is where all your movies are
 # NOTE: The name of the movies is extracted from the movie's folder,
 #       if the folder is called "..Movies/The Rabbit"
-#				the name of the movie in that folder will be "The Rabbit". 
+#		the name of the movie in that folder will be "The Rabbit". 
 
 folder="/media/xtreme/Movies"
 
@@ -28,7 +28,7 @@ movies=1
 rm tempmovies 2> /dev/null
 for dir in $folder/*
 do
-  (cd "$dir" && pwd|cut -d \/ -f6|tr -s '\n' ', ' >> $here/tempmovies &&
+  (cd "$dir" && found=$(pwd) && echo ${found##/*/}|tr -s '\n' ', ' >> $here/tempmovies &&
   exiftool -ext .mkv -ext .m4v -ext .mp4 -ext .avi -ext .mpg * -t -s3 -ImageSize -FileType|tr -s '\t' ',' >> $here/tempmovies )
 	base=$(echo "scale=3; $percent * $movies" | bc)
 	echo -ne " Total: $base% Done / $movies Movies Added!"\\r
