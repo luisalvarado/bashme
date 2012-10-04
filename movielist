@@ -5,9 +5,9 @@
 # CONFIG Variables
 
 # FOLDER Variable is where all your movies are. Must not end with a backslash.
-# NOTE: The name of the movies is extracted from the movie's folder, if the 
-#       folder is called "..Movies/The Rabbit" then the name of the movie in 
-#       that folder would be "The Rabbit". 
+# NOTE: The name of the movies is extracted from the movie's folder, if the
+#       folder is called "..Movies/The Rabbit" then the name of the movie in
+#       that folder would be "The Rabbit".
 
 folder="/media/cyrex/xtreme/Movies"
 
@@ -15,7 +15,7 @@ folder="/media/cyrex/xtreme/Movies"
 
 final="moviefinal.txt"
 
-# NOTE: Movie Name can not have a comma "," in the name since this is the 
+# NOTE: Movie Name can not have a comma "," in the name since this is the
 #       separator used to check the quality of the movie.
 
 ###############################################################################
