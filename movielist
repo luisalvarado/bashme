@@ -22,7 +22,8 @@ final="moviefinal.txt"
 
 here=$(pwd)
 percent=$(ls "$folder/"|wc -l| while read pipe; do echo "scale=3; 100/$pipe"; done|bc)
-movies=1
+total=$(ls "$folder/"|wc -l)
+movies=0
 quality=1
 
 clear
@@ -36,9 +37,14 @@ for dir in "$folder"/*
 do
   (cd "$dir" && found=$(pwd) && echo ${found##/*/}|tr -s '\n' ', ' >> $here/tempmovies &&
   	exiftool -ext .mkv -ext .m4v -ext .mp4 -ext .avi -ext .mpg * -p '$ImageSize, $FileType' >> $here/tempmovies)
-	base=$(echo "scale=3; $percent * $movies" | bc)
-	echo -ne " Total: $base% Done / $movies Movies Added!"\\r
 	let movies=movies+1
+	base=$(echo "scale=3; $percent * $movies" | bc)
+	if (($movies == $total))
+	then
+		echo -ne " Total: 100% Done / $movies Movies Added!"\\r
+	else
+		echo -ne " Total: $base% Done / $movies Movies Added!"\\r
+	fi
 done
 
 echo " "
@@ -55,19 +61,19 @@ do
 	do
 		if (($MovieRes>=304 && $MovieRes<=370))
         then
-        	echo "$MovieName, LOW-RES DVD"
+        	echo "$MovieName, DVD LOW-RES"
 		elif (($MovieRes>=241 && $MovieRes<=369))
 		then
-			echo "$MovieName, HI-RES DVD"
+			echo "$MovieName, DVD HI-RES"
 		elif (($MovieRes>=371 && $MovieRes<=479))
 		then
-			echo "$MovieName, EDTV 480p"
+			echo "$MovieName, 480p SD"
 		elif (($MovieRes>=480 && $MovieRes<=760))
 		then
-			echo "$MovieName, HDTV 720p"
+			echo "$MovieName, 720p HD"
 		elif (($MovieRes>=761 && $MovieRes<=1200))
 		then
-			echo "$MovieName, HDTV 1080p"
+			echo "$MovieName, 1080p HD"
 		else
 			echo "$MovieName, VCD"
 		fi >> $final
