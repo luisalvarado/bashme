@@ -65,10 +65,10 @@ do
 		elif (($MovieRes>=241 && $MovieRes<=369))
 		then
 			echo "$MovieName, DVD HI-RES"
-		elif (($MovieRes>=371 && $MovieRes<=479))
+		elif (($MovieRes>=371 && $MovieRes<=480))
 		then
 			echo "$MovieName, 480p SD"
-		elif (($MovieRes>=480 && $MovieRes<=760))
+		elif (($MovieRes>=481 && $MovieRes<=760))
 		then
 			echo "$MovieName, 720p HD"
 		elif (($MovieRes>=761 && $MovieRes<=1200))
