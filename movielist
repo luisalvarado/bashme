@@ -9,11 +9,11 @@
 #       folder is called "..Movies/The Rabbit" then the name of the movie in
 #       that folder would be "The Rabbit".
 
-folder="/media/cyrex/xtreme/Movies"
+folder="/media/cyrex/xtreme/movies"
 
 # FINAL Variable is the name of the file you wish to create with the Movie List.
 
-final="moviefinal.txt"
+final="final.txt"
 
 # NOTE: Movie Name can not have a comma "," in the name since this is the
 #       separator used to check the quality of the movie.
@@ -51,7 +51,7 @@ echo " "
 echo " Detecting Movie Quality..."
 echo " "
 
-rm $final 2> /dev/null
+rm "$final" 2> /dev/null
 
 cat tempmovies | while read MovieName;
 
@@ -76,17 +76,17 @@ do
 			echo "$MovieName, 1080p HD"
 		else
 			echo "$MovieName, VCD"
-		fi >> $final
+		fi >> "$final"
 	done
 	let quality=quality+1
 done
 
-hd=$(cat moviefinal.txt |grep -e "1080p HD" -e "720p HD"|wc -l)
-sd=$(cat moviefinal.txt |grep -ve "1080p HD" -ve "720p HD"|wc -l)
+hd=$(cat "$final" |grep -e "1080p HD" -e "720p HD"|wc -l)
+sd=$(cat "$final" |grep -ve "1080p HD" -ve "720p HD"|wc -l)
 
 echo " "
 echo "----------------"
-cat $final | cut -d ',' -f4| sort | uniq -c
+cat "$final" | cut -d ',' -f4| sort | uniq -c
 echo "----------------"
 echo " "
 echo "$hd HD Total Movies"
