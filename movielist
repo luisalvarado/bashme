@@ -81,10 +81,16 @@ do
 	let quality=quality+1
 done
 
+hd=$(cat moviefinal.txt |grep -e "1080p HD" -e "720p HD"|wc -l)
+sd=$(cat moviefinal.txt |grep -ve "1080p HD" -ve "720p HD"|wc -l)
+
 echo " "
 echo "----------------"
 cat $final | cut -d ',' -f4| sort | uniq -c
 echo "----------------"
+echo " "
+echo "$hd HD Total Movies"
+echo "$sd SD Total Movies"
 echo " "
 
 rm tempmovies 2> /dev/null
