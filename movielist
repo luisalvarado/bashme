@@ -5,17 +5,19 @@
 # CONFIG Variables
 
 # FOLDER Variable is where all your movies are. Must not end with a backslash.
-# NOTE: The name of the movies is extracted from the movie's folder, if the
-#       folder is called "..Movies/The Rabbit" then the name of the movie in
-#       that folder would be "The Rabbit".
+# NOTE: The name of the movies is extracted from the movie's folder, if the 
+#       folder is called "..Movies/The Rabbit" then the name of the movie in 
+#       that folder would be "The Rabbit". 
 
 folder="/media/cyrex/xtreme/movies"
 
 # FINAL Variable is the name of the file you wish to create with the Movie List.
 
 final="final.txt"
+vcd="vcdmovies.txt"
+dvd="dvdmovies.txt"
 
-# NOTE: Movie Name can not have a comma "," in the name since this is the
+# NOTE: Movie Name can not have a comma "," in the name since this is the 
 #       separator used to check the quality of the movie.
 
 ###############################################################################
@@ -36,8 +38,8 @@ rm tempmovies 2> /dev/null
 for dir in "$folder"/*
 do
   (cd "$dir" && found=$(pwd) && echo ${found##/*/}|tr -s '\n' ', ' >> $here/tempmovies &&
-  	exiftool -ext .mkv -ext .m4v -ext .mp4 -ext .avi -ext .mpg * -p '$ImageSize, $FileType' >> $here/tempmovies)
-	let movies=movies+1
+	exiftool -ext .mkv -ext .m4v -ext .mp4 -ext .avi -ext .mpg * -p '$ImageSize, $FileType' >> $here/tempmovies)
+	let movies++
 	base=$(echo "scale=3; $percent * $movies" | bc)
 	if (($movies == $total))
 	then
@@ -59,26 +61,14 @@ do
 	echo -ne " Summary: $quality Quality Checks Done!"\\r
 	echo "$MovieName" | cut -d ',' -f2 | cut -d 'x' -f2 | sort | uniq | while read MovieRes;
 	do
-		if (($MovieRes>=304 && $MovieRes<=370))
-        then
-        	echo "$MovieName, DVD LOW-RES"
-		elif (($MovieRes>=241 && $MovieRes<=369))
-		then
-			echo "$MovieName, DVD HI-RES"
-		elif (($MovieRes>=371 && $MovieRes<=480))
-		then
-			echo "$MovieName, 480p SD"
-		elif (($MovieRes>=481 && $MovieRes<=760))
-		then
-			echo "$MovieName, 720p HD"
-		elif (($MovieRes>=761 && $MovieRes<=1200))
-		then
-			echo "$MovieName, 1080p HD"
-		else
-			echo "$MovieName, VCD"
+		if (($MovieRes>=241 && $MovieRes<=370)) ; then echo "$MovieName, DVD"
+		elif (($MovieRes>=371 && $MovieRes<=524)) ; then echo "$MovieName, 480p SD"
+		elif (($MovieRes>=525 && $MovieRes<=779)) ; then echo "$MovieName, 720p HD"
+		elif (($MovieRes>=780)) ; then echo "$MovieName, 1080p HD"
+		else echo "$MovieName, VCD"
 		fi >> "$final"
 	done
-	let quality=quality+1
+	let quality++
 done
 
 hd=$(cat "$final" |grep -e "1080p HD" -e "720p HD"|wc -l)
@@ -92,7 +82,8 @@ echo " "
 echo "$hd HD Total Movies"
 echo "$sd SD Total Movies"
 echo " "
-
+cat "$final" | grep -e "VCD" > "$vcd"
+cat "$final" | grep -e "DVD" > "$dvd"
 rm tempmovies 2> /dev/null
 
 echo "File $final Created!"
